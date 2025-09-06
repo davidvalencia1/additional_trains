@@ -1,0 +1,16 @@
+
+{
+"name": "additional_trains",
+"title": "Additional trains",
+"version": "1.0.0",
+"date": "2025-09-06",
+"author": "--",
+"contact": "",
+"homepage": "",
+"factorio_version": "2.0",
+"dependencies": [
+    "base >= 2.0.43",
+    "(?) factorioplus >= 2.3.5"
+],
+"description": "Additional trains is based on Yuoki Industries - Railroads/ Railways/ Americans. \n Added only locomotives and wagons without buildings etc. All locomotive use standard fuel"
+}
