@@ -2,11 +2,18 @@ local utility = require("utility")
 local const = require("const")
 local recipe = {}
 
-local STANDARD_RECIPE = {
-    [const.VEHICLE_TYPE.LOCOMOTIVE] = data.raw["recipe"]["locomotive"].ingredients,
-    [const.VEHICLE_TYPE.CARGO_WAGON] = data.raw["recipe"]["cargo-wagon"].ingredients,
-    [const.VEHICLE_TYPE.FLUID_WAGON] = data.raw["recipe"]["fluid-wagon"].ingredients
-}
+local STANDARD_RECIPE = {}
+
+-- Funcion para actualizar STANDARD_RECIPE desde afuera
+function recipe.setStandardRecipes()
+    STANDARD_RECIPE = {
+        [const.VEHICLE_TYPE.LOCOMOTIVE]  = data.raw["recipe"]["locomotive"].ingredients,
+        [const.VEHICLE_TYPE.CARGO_WAGON] = data.raw["recipe"]["cargo-wagon"].ingredients,
+        [const.VEHICLE_TYPE.FLUID_WAGON] = data.raw["recipe"]["fluid-wagon"].ingredients
+    }
+end
+
+recipe.setStandardRecipes()
 
 local RECIPE_COST = {
     [const.VEHICLE_SIZE.TINY] = settings.startup["cheap-recipe-how-many-times-cheaper"].value,
@@ -66,7 +73,7 @@ standardTrainsUseExpensiveRecipe()
 local function createBasicRecipe(entity, ingredients, subgroupName)
     return {
         type = "recipe",
-        name = entity.name,
+        name = "at_" .. entity.name .. entity.size,
         enabled = true,
         energy_required = 5.00,
         ingredients = ingredients,
