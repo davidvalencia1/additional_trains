@@ -1,40 +1,43 @@
 -- data-final-fixes.lua
-local utility = require("utility")
-local const = require("const")
-local recipe = require("recipe")
+local const = require("prototypes.const")
+local recipe = require("prototypes.recipe")
 
 -- Actualizamos STANDARD_RECIPE al inicio
+log("Updating standard recipes...")
 recipe.setStandardRecipes()
 
 -- Mapeo de palabras clave a tipo de vehiculo
 local TYPE_MAP = {
-    locomotive = const.VEHICLE_TYPE.LOCOMOTIVE,
-    cargo      = const.VEHICLE_TYPE.CARGO_WAGON,
-    fluid      = const.VEHICLE_TYPE.FLUID_WAGON,
+    LOCOMOTIVE = const.VEHICLE_TYPE.LOCOMOTIVE,
+    CARGO      = const.VEHICLE_TYPE.CARGO_WAGON,
+    FLUID      = const.VEHICLE_TYPE.FLUID_WAGON,
 }
+
+local sizeSuffixPattern = "_(" .. table.concat(const.VEHICLE_SIZE, "|") .. ")$"
 
 -- Mapeo de sufijos a tamaio
 local SIZE_MAP = {
-    tiny   = const.VEHICLE_SIZE.TINY,
-    small  = const.VEHICLE_SIZE.SMALL,
-    normal = const.VEHICLE_SIZE.NORMAL,
+    TINY   = const.VEHICLE_SIZE.TINY,
+    SMALL  = const.VEHICLE_SIZE.SMALL,
+    NORMAL = const.VEHICLE_SIZE.NORMAL,
 }
 
 for name, rec in pairs(data.raw["recipe"]) do
     if string.sub(name, 1, 3) == "at_" then
         local vtype, vsize
-
         -- Detecta tipo
-        for key, val in pairs(TYPE_MAP) do
-            if string.find(name, key) then
+        for _, val in pairs(TYPE_MAP) do
+            log("Checking name " .. name .. " for type " .. val)
+            if string.find(name, val, 1, true) then
+                log("Found matching type: " .. val)
                 vtype = val
                 break
             end
         end
 
         -- Detecta tamano
-        for key, val in pairs(SIZE_MAP) do
-            if string.find(name, key) then
+        for _, val in pairs(SIZE_MAP) do
+            if string.find(name, val, 1, true) then
                 vsize = val
                 break
             end
@@ -48,11 +51,11 @@ for name, rec in pairs(data.raw["recipe"]) do
             local upgradedIngredients = recipe.createRecipe(entity).ingredients
 
             local newName = name
-                :gsub("^at_", "")                 -- quita el prefijo
-                :gsub("_(tiny|small|normal)$", "") -- quita el sufijo
-                
-            rec.ingredients = upgradedIngredients
+                :gsub("^at_", "")
+                :gsub(sizeSuffixPattern, "")
+                :gsub("_" .. vtype, "")
 
+            rec.ingredients = upgradedIngredients
             if not data.raw["recipe"][newName] then
                 rec.name = newName
                 data.raw["recipe"][newName] = rec

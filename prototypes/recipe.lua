@@ -73,7 +73,7 @@ standardTrainsUseExpensiveRecipe()
 local function createBasicRecipe(entity, ingredients, subgroupName)
     return {
         type = "recipe",
-        name = "at_" .. entity.name .. entity.size,
+        name = "at_" .. entity.name .. "_".. entity.size .. "_" .. entity.type,
         enabled = true,
         energy_required = 5.00,
         ingredients = ingredients,
